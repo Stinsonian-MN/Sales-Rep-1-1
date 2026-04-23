@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stinson Services — Weekly 1-on-1</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#0f1117;--ink-2:#3a3d47;--ink-3:#72757f;--ink-4:#a8aab2;
+    --paper:#f5f3ee;--paper-2:#ede9e1;--paper-3:#e2ddd4;--rule:#d4cfc5;
+    --accent:#1a4a8a;--accent-lt:#e8eef7;
+    --green:#1a6640;--green-lt:#e6f2ec;
+    --amber:#8a4e00;--amber-lt:#fdf0e0;
+    --red:#8a1a1a;--red-lt:#fce8e8;
+    --serif:'DM Serif Display',Georgia,serif;
+    --sans:'Instrument Sans',system-ui,sans-serif;
+    --mono:'DM Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;min-height:100vh;}
+  .masthead{background:var(--ink);color:var(--paper);padding:20px 32px 16px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid var(--accent);}
+  .masthead h1{font-family:var(--serif);font-size:22px;font-weight:400;line-height:1.1;}
+  .masthead h1 em{font-style:italic;color:#8fa8d0;}
+  .masthead-sub{font-family:var(--mono);font-size:10px;color:#8fa8d0;margin-top:5px;letter-spacing:.08em;}
+  .masthead-right{text-align:right;font-family:var(--mono);font-size:11px;color:#8fa8d0;}
+  .date-display{font-family:var(--serif);font-size:17px;color:var(--paper);margin-top:3px;}
+  .tool-nav{background:var(--paper-2);border-bottom:1px solid var(--rule);padding:8px 32px;font-family:var(--mono);font-size:11px;color:var(--ink-3);display:flex;align-items:center;gap:6px;}
+  .tool-nav a{color:var(--accent);text-decoration:none;}
+  .tool-nav a:hover{text-decoration:underline;}
+  .tool-nav .sep{color:var(--ink-4);}
+  .meta-bar{background:var(--paper-2);border-bottom:1px solid var(--rule);padding:12px 32px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+  .meta-bar select,.meta-bar input{font-family:var(--sans);font-size:13px;padding:7px 12px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);outline:none;}
+  .meta-bar select:focus,.meta-bar input:focus{border-color:var(--accent);}
+  .meta-group{display:flex;flex-direction:column;gap:4px;}
+  .meta-group label{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.07em;text-transform:uppercase;}
+  .main{padding:20px 32px 60px;max-width:900px;}
+  .section{margin-bottom:10px;}
+  .sec-hdr{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--paper-2);border:1px solid var(--rule);border-radius:8px 8px 0 0;cursor:pointer;user-select:none;transition:background .15s;}
+  .sec-hdr:hover{background:var(--paper-3);}
+  .sec-hdr.collapsed{border-radius:8px;}
+  .sec-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;font-family:var(--mono);}
+  .sec-title{font-size:13px;font-weight:600;flex:1;}
+  .sec-time{font-family:var(--mono);font-size:10px;color:var(--ink-3);}
+  .sec-progress{font-family:var(--mono);font-size:10px;color:var(--ink-4);}
+  .sec-chevron{font-size:10px;color:var(--ink-4);transition:transform .2s;}
+  .sec-chevron.open{transform:rotate(90deg);}
+  .sec-body{border:1px solid var(--rule);border-top:none;border-radius:0 0 8px 8px;background:var(--paper);padding:16px;display:none;}
+  .sec-body.open{display:block;}
+  .checklist{list-style:none;}
+  .checklist li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:13px;}
+  .checklist li:last-child{border-bottom:none;}
+  .checklist li input[type=checkbox]{margin-top:2px;flex-shrink:0;cursor:pointer;accent-color:var(--accent);width:14px;height:14px;}
+  .checklist li label{cursor:pointer;line-height:1.5;}
+  .checklist li label .sub{display:block;font-size:11px;color:var(--ink-3);font-family:var(--mono);margin-top:2px;}
+  .check-done label{text-decoration:line-through;color:var(--ink-4);}
+  .note-label{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.07em;text-transform:uppercase;margin:12px 0 5px;}
+  .note-area{width:100%;padding:10px 12px;font-size:13px;border:1px solid var(--rule);border-radius:6px;background:var(--paper-2);color:var(--ink);font-family:var(--sans);resize:vertical;min-height:64px;line-height:1.6;outline:none;}
+  .note-area:focus{border-color:var(--accent);}
+  .metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0;}
+  .metric-box{border:1px solid var(--rule);border-radius:8px;padding:12px;background:var(--paper);position:relative;overflow:hidden;}
+  .metric-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);}
+  .metric-box.green::before{background:var(--green);}
+  .metric-box.amber::before{background:#c97a00;}
+  .metric-box label{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.05em;display:block;margin-bottom:6px;text-transform:uppercase;}
+  .metric-box input{width:100%;padding:6px 8px;font-size:15px;font-weight:600;border:1px solid var(--rule);border-radius:5px;background:var(--paper-2);color:var(--ink);text-align:center;font-family:var(--mono);outline:none;}
+  .metric-box input:focus{border-color:var(--accent);}
+  .metric-hint{font-family:var(--mono);font-size:10px;color:var(--ink-4);margin-top:5px;}
+  .prog-wrap{margin:6px 0 2px;}
+  .prog-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-bottom:3px;}
+  .prog-track{height:4px;background:var(--paper-3);border-radius:2px;overflow:hidden;}
+  .prog-fill{height:100%;border-radius:2px;transition:width .4s ease,background .3s;}
+  .slii-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0;}
+  .slii-card{border:1px solid var(--rule);border-radius:8px;padding:10px 8px;cursor:pointer;text-align:center;transition:all .15s;background:var(--paper);}
+  .slii-card:hover{border-color:var(--ink-3);}
+  .slii-card.sel{border-width:2px;}
+  .slii-card .dl{font-family:var(--serif);font-size:18px;}
+  .slii-card .ds{font-size:10px;color:var(--ink-3);margin:2px 0 6px;line-height:1.3;}
+  .slii-card .ls{font-size:10px;font-family:var(--mono);padding:3px 6px;border-radius:3px;display:inline-block;font-weight:500;}
+  .d1-card.sel{border-color:#c97a00;background:var(--amber-lt);}
+  .d2-card.sel{border-color:var(--red);background:var(--red-lt);}
+  .d3-card.sel{border-color:var(--accent);background:var(--accent-lt);}
+  .d4-card.sel{border-color:var(--green);background:var(--green-lt);}
+  .guidance-box{border-radius:6px;padding:12px 14px;font-size:12px;line-height:1.7;margin-top:4px;display:none;border-left:3px solid;}
+  .action-row{display:flex;gap:8px;margin-bottom:6px;align-items:center;}
+  .action-row input[type=text]{flex:1;padding:7px 10px;font-size:13px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);font-family:var(--sans);outline:none;}
+  .action-row input[type=text]:focus{border-color:var(--accent);}
+  .action-row select{padding:7px 8px;font-size:12px;font-family:var(--mono);border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);outline:none;}
+  .del-btn{width:28px;height:28px;border:1px solid var(--rule);border-radius:5px;background:var(--paper-2);color:var(--ink-3);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .del-btn:hover{background:var(--red-lt);color:var(--red);border-color:var(--red);}
+  .add-action-btn{width:100%;padding:9px;font-size:12px;font-family:var(--mono);border:1px dashed var(--rule);border-radius:6px;background:transparent;cursor:pointer;color:var(--ink-3);margin-top:4px;letter-spacing:.04em;}
+  .add-action-btn:hover{background:var(--paper-2);color:var(--ink-2);border-color:var(--ink-3);}
+  .post-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+  .post-card{border:1px solid var(--rule);border-radius:8px;padding:14px;background:var(--paper);}
+  .post-card h4{font-size:13px;font-weight:600;margin-bottom:6px;}
+  .post-card p{font-size:12px;color:var(--ink-3);line-height:1.6;margin-bottom:10px;}
+  .notion-panel{background:var(--accent-lt);border:1px solid #b5c8e8;border-radius:8px;padding:16px;margin-top:20px;}
+  .notion-panel h3{font-family:var(--serif);font-size:16px;font-weight:400;margin-bottom:6px;}
+  .notion-panel p{font-size:12px;color:var(--ink-2);margin-bottom:12px;line-height:1.6;}
+  textarea.notion-output{display:block;width:100%;background:white;border:1px solid #b5c8e8;border-radius:6px;padding:12px;font-family:var(--mono);font-size:11px;line-height:1.8;color:var(--ink-2);min-height:140px;resize:vertical;outline:none;overflow:auto;}
+  .notion-hint{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-top:6px;line-height:1.7;min-height:18px;}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+  .action-btn{padding:8px 16px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:white;border:none;border-radius:5px;cursor:pointer;}
+  .action-btn:hover{opacity:.85;}
+  .btn-generate{background:var(--accent);}
+  .btn-select{background:var(--ink-2);}
+  .btn-select.done{background:var(--green);}
+  .btn-print{background:var(--ink-3);}
+  .divider{height:1px;background:var(--rule);margin:14px 0;}
+  .mini-label{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;}
+  @media print{.sec-body{display:block!important;}.notion-panel,.tool-nav{display:none;}body{background:white;}}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div>
+    <h1>Stinson Services &nbsp;<em>Weekly 1-on-1</em></h1>
+    <div class="masthead-sub">Sales team · FY Apr 2026 – Mar 2027 · $1.5M per rep target</div>
+  </div>
+  <div class="masthead-right">
+    <div>Meeting date</div>
+    <div class="date-display" id="date-display">—</div>
+  </div>
+</div>
+
+<div class="tool-nav">
+  <a href="/sales-manager/">Sales Manager</a>
+  <span class="sep">/</span>
+  <span>Weekly 1-on-1 Agenda</span>
+</div>
+
+<div class="meta-bar">
+  <div class="meta-group">
+    <label>Sales rep</label>
+    <select id="sel-rep">
+      <option value="">Select rep…</option>
+      <option value="HS">Heidi Stinson</option>
+      <option value="JV">Jeff Vacanti</option>
+      <option value="JA">Jim Anderson</option>
+      <option value="RS">Ryan Stinson</option>
+    </select>
+  </div>
+  <div class="meta-group">
+    <label>Meeting date</label>
+    <input type="date" id="mtg-date" onchange="updateDateDisplay()">
+  </div>
+  <div class="meta-group">
+    <label>Meeting #</label>
+    <input type="text" id="mtg-num" placeholder="e.g. Week 3" style="width:110px">
+  </div>
+  <div class="meta-group">
+    <label>Fireflies link</label>
+    <input type="text" id="fireflies-link" placeholder="Paste digest URL…" style="width:220px">
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- 1: CONNECT -->
+  <div class="section">
+    <div class="sec-hdr" onclick="toggleSection(this)" data-sec="1">
+      <div class="sec-num" style="background:var(--accent-lt);color:var(--accent)">1</div>
+      <div class="sec-title">Connect — personal check-in</div>
+      <div class="sec-time">5 min</div>
+      <div class="sec-progress" id="prog-1">0/3</div>
+      <div class="sec-chevron open">▶</div>
+    </div>
+    <div class="sec-body open" id="body-1">
+      <ul class="checklist">
+        <li><input type="checkbox" id="c1a" onchange="updateProgress('1')"><label for="c1a">Highlight and lowlight of the past week<span class="sub">Let them lead. Listen for mood, energy, blockers before data review.</span></label></li>
+        <li><input type="checkbox" id="c1b" onchange="updateProgress('1')"><label for="c1b">How are you feeling about your pipeline right now?<span class="sub">Confidence / motivation temperature check.</span></label></li>
+        <li><input type="checkbox" id="c1c" onchange="updateProgress('1')"><label for="c1c">Anything urgent to flag before we dive in?</label></li>
+      </ul>
+      <div class="note-label">Check-in notes</div>
+      <textarea class="note-area" id="notes-1" placeholder="Notes from check-in…"></textarea>
+    </div>
+  </div>
+
+  <!-- 2: PIPELINE -->
+  <div class="section">
+    <div class="sec-hdr" onclick="toggleSection(this)" data-sec="2">
+      <div class="sec-num" style="background:var(--accent-lt);color:var(--accent)">2</div>
+      <div class="sec-title">Pipeline review — Stinson Weekly Review</div>
+      <div class="sec-time">10 min</div>
+      <div class="sec-progress" id="prog-2">0/4</div>
+      <div class="sec-chevron">▶</div>
+    </div>
+    <div class="sec-body" id="body-2">
+      <p style="font-size:12px;color:var(--ink-3);margin-bottom:12px">Open the Stinson Weekly Review alongside this agenda, filtered to this rep.</p>
+      <ul class="checklist">
+        <li><input type="checkbox" id="c2a" onchange="updateProgress('2')"><label for="c2a">Open pipeline $ vs $1.5M annual target — check weighted % and week-over-week trend</label></li>
+        <li><input type="checkbox" id="c2b" onchange="updateProgress('2')"><label for="c2b">Walk each active opportunity by status<span class="sub">Contract Sent → Bid Creation → Appt Booked. Anything stalled longer than 2 weeks?</span></label></li>
+        <li><input type="checkbox" id="c2c" onchange="updateProgress('2')"><label for="c2c">Confirm estimated close dates are realistic — flag anything outside FY or missing confidence</label></li>
+        <li><input type="checkbox" id="c2d" onchange="updateProgress('2')"><label for="c2d">New opportunities to add this week?</label></li>
+      </ul>
+      <div class="divider"></div>
+      <div class="mini-label">Pipeline snapshot — record for Notion</div>
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <label>Open pipeline $</label>
+          <input type="text" id="m-pipeline" placeholder="$0" oninput="updatePipelineBar()">
+          <div class="prog-wrap">
+            <div class="prog-labels"><span>vs $1.5M</span><span id="pct-lbl">0%</span></div>
+            <div class="prog-track"><div class="prog-fill" id="prog-bar" style="width:0%;background:var(--accent)"></div></div>
+          </div>
+        </div>
+        <div class="metric-box">
+          <label>Weighted pipeline $</label>
+          <input type="text" id="m-weighted" placeholder="$0">
+          <div class="metric-hint">Confidence-adjusted</div>
+        </div>
+        <div class="metric-box green">
+          <label>Approved this export $</label>
+          <input type="text" id="m-approved" placeholder="$0">
+          <div class="metric-hint">Closed won in FY</div>
+        </div>
+      </div>
+      <div class="note-label">Pipeline notes</div>
+      <textarea class="note-area" id="notes-2" placeholder="Deals at risk, opportunities to discuss, needs follow-up…"></textarea>
+    </div>
+  </div>
+
+  <!-- 3: SELF-GEN -->
+  <div class="section">
+    <div class="sec-hdr" onclick="toggleSection(this)" data-sec="3">
+      <div class="sec-num" style="background:var(--amber-lt);color:var(--amber)">3</div>
+      <div class="sec-title">Self-generated activity metrics — TickTick review</div>
+      <div class="sec-time">8 min</div>
+      <div class="sec-progress" id="prog-3">0/3</div>
+      <div class="sec-chevron">▶</div>
+    </div>
+    <div class="sec-body" id="body-3">
+      <p style="font-size:12px;color:var(--ink-3);margin-bottom:12px">Core self-initiated sales activity — not inbound. Review TickTick self-gen section together.</p>
+      <div class="metrics-grid">
+        <div class="metric-box amber">
+          <label>Self-generated leads</label>
+          <input type="number" id="m-leads" placeholder="0" min="0">
+          <div class="metric-hint">This week, self-initiated</div>
+        </div>
+        <div class="metric-box amber">
+          <label>Self-gen appointments</label>
+          <input type="number" id="m-appts" placeholder="0" min="0">
+          <div class="metric-hint">Booked from own outreach</div>
+        </div>
+        <div class="metric-box green">
+          <label>Contracts delivered</label>
+          <input type="number" id="m-contracts" placeholder="0" min="0">
+          <div class="metric-hint">Sent to customer this week</div>
+        </div>
+      </div>
+      <ul class="checklist" style="margin-top:10px">
+        <li><input type="checkbox" id="c3a" onchange="updateProgress('3')"><label for="c3a">What's driving or blocking self-gen lead activity this week?</label></li>
+        <li><input type="checkbox" id="c3b" onchange="updateProgress('3')"><label for="c3b">Leads → appointments → contracts conversion ratio on track?<span class="sub">Identify where the funnel is leaking.</span></label></li>
+        <li><input type="checkbox" id="c3c" onchange="updateProgress('3')"><label for="c3c">Referral sources or new verticals to pursue this week?</label></li>
+      </ul>
+      <div class="note-label">Activity notes</div>
+      <textarea class="note-area" id="notes-3" placeholder="Patterns, blockers, strategies for more self-initiated opportunities…"></textarea>
+    </div>
+  </div>
+
+  <!-- 4: SLII -->
+  <div class="section">
+    <div class="sec-hdr" onclick="toggleSection(this)" data-sec="4">
+      <div class="sec-num" style="background:var(--green-lt);color:var(--green)">4</div>
+      <div class="sec-title">SLII coaching — One-on-One Worksheet review</div>
+      <div class="sec-time">10 min</div>
+      <div class="sec-progress" id="prog-4">0/4</div>
+      <div class="sec-chevron">▶</div>
+    </div>
+    <div class="sec-body" id="body-4">
+      <p style="font-size:12px;color:var(--ink-3);margin-bottom:12px">Review the rep's submitted One-on-One Worksheet. Diagnose development level, match your leadership style.</p>
+      <div class="mini-label">Diagnose development level</div>
+      <div class="slii-grid">
+        <div class="slii-card d1-card" id="slii-d1" onclick="selectSlii('d1')">
+          <div class="dl">D1</div><div class="ds">Enthusiastic beginner</div>
+          <div class="ls" style="background:var(--amber-lt);color:var(--amber)">S1 Directing</div>
+        </div>
+        <div class="slii-card d2-card" id="slii-d2" onclick="selectSlii('d2')">
+          <div class="dl">D2</div><div class="ds">Disillusioned learner</div>
+          <div class="ls" style="background:var(--red-lt);color:var(--red)">S2 Coaching</div>
+        </div>
+        <div class="slii-card d3-card" id="slii-d3" onclick="selectSlii('d3')">
+          <div class="dl">D3</div><div class="ds">Capable but cautious</div>
+          <div class="ls" style="background:var(--accent-lt);color:var(--accent)">S3 Supporting</div>
+        </div>
+        <div class="slii-card d4-card" id="slii-d4" onclick="selectSlii('d4')">
+          <div class="dl">D4</div><div class="ds">Self-reliant achiever</div>
+          <div class="ls" style="background:var(--green-lt);color:var(--green)">S4 Delegating</div>
+        </div>
+      </div>
+      <div class="guidance-box" id="slii-guidance"></div>
+      <div class="divider"></div>
+      <div class="mini-label">Worksheet topics</div>
+      <ul class="checklist">
+        <li><input type="checkbox" id="c4a" onchange="updateProgress('4')"><label for="c4a">Topic 1 — diagnose D level, apply matched S response</label></li>
+        <li><input type="checkbox" id="c4b" onchange="updateProgress('4')"><label for="c4b">Topic 2 from One-on-One Worksheet</label></li>
+        <li><input type="checkbox" id="c4c" onchange="updateProgress('4')"><label for="c4c">Topic 3 from One-on-One Worksheet</label></li>
+        <li><input type="checkbox" id="c4d" onchange="updateProgress('4')"><label for="c4d">Any goals that need to be reset or reconfirmed as SMART goals?</label></li>
+      </ul>
+      <div class="note-label">Coaching notes</div>
+      <textarea class="note-area" id="notes-4" placeholder="Development level decisions, key themes, support style applied and why…"></textarea>
+    </div>
+  </div>
+
+  <!-- 5: ACTIONS -->
+  <div class="section">
+    <div class="sec-hdr" onclick="toggleSection(this)" data-sec="5">
+      <div class="sec-num" style="background:var(--accent-lt);color:var(--accent)">5</div>
+      <div class="sec-title">Next actions — TickTick assignments</div>
+      <div class="sec-time">7 min</div>
+      <div class="sec-progress" id="prog-5">0/1</div>
+      <div class="sec-chevron">▶</div>
+    </div>
+    <div class="sec-body" id="body-5">
+      <ul class="checklist">
+        <li><input type="checkbox" id="c5a" onchange="updateProgress('5')"><label for="c5a">Review last week's action items first — completed or carry-forward?<span class="sub">Hold the rep accountable before adding new tasks.</span></label></li>
+      </ul>
+      <div class="divider"></div>
+      <div class="mini-label">Action items for this week</div>
+      <div id="actions-list"></div>
+      <button class="add-action-btn" onclick="addAction()">+ add action item</button>
+      <div class="note-label">Additional TickTick notes</div>
+      <textarea class="note-area" id="notes-5" placeholder="Context for tasks, carry-forwards, priority notes…"></textarea>
+    </div>
+  </div>
+
+  <!-- 6: CLOSE -->
+  <div class="section">
+    <div class="sec-hdr" onclick="toggleSection(this)" data-sec="6">
+      <div class="sec-num" style="background:var(--green-lt);color:var(--green)">6</div>
+      <div class="sec-title">Close &amp; send — Fireflies + TickTick</div>
+      <div class="sec-time">5 min</div>
+      <div class="sec-progress" id="prog-6">0/4</div>
+      <div class="sec-chevron">▶</div>
+    </div>
+    <div class="sec-body" id="body-6">
+      <div class="post-grid">
+        <div class="post-card">
+          <h4>Fireflies.ai</h4>
+          <p>Share meeting digest with rep same day. Confirm the bot recorded before ending the call.</p>
+          <ul class="checklist">
+            <li><input type="checkbox" id="c6a" onchange="updateProgress('6')"><label for="c6a">Confirm recording captured in Fireflies</label></li>
+            <li><input type="checkbox" id="c6b" onchange="updateProgress('6')"><label for="c6b">Forward digest link to rep</label></li>
+          </ul>
+        </div>
+        <div class="post-card">
+          <h4>TickTick + Notion</h4>
+          <p>Log action items in TickTick with due dates. Paste the Notion record below into Meeting Records.</p>
+          <ul class="checklist">
+            <li><input type="checkbox" id="c6c" onchange="updateProgress('6')"><label for="c6c">Action items logged in TickTick with due dates</label></li>
+            <li><input type="checkbox" id="c6d" onchange="updateProgress('6')"><label for="c6d">Next 1-on-1 confirmed on calendar</label></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTION EXPORT -->
+  <div class="notion-panel">
+    <h3>Notion meeting record</h3>
+    <p>Click <strong>Generate record</strong> to build the summary. Then click <strong>Select all text</strong> and press Cmd+C (Mac) or Ctrl+C (Windows) to copy. Paste into a new row in your Notion Meeting Records database.</p>
+    <textarea class="notion-output" id="notion-output" readonly>Fill in the meeting details above, then click Generate Record.</textarea>
+    <div class="notion-hint" id="notion-hint"></div>
+    <div class="btn-row">
+      <button class="action-btn btn-generate" onclick="generateRecord()">Generate record</button>
+      <button class="action-btn btn-select" id="select-btn" onclick="selectAll()">Select all text</button>
+      <button class="action-btn btn-print" onclick="printPage()">Print / save PDF</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var REP_NAMES = {HS:'Heidi Stinson',JV:'Jeff Vacanti',JA:'Jim Anderson',RS:'Ryan Stinson'};
+var actionCount = 0;
+var selectedSlii = '';
+var SLII_G = {
+  d1:{color:'#8a4e00',bg:'#fdf0e0',border:'#c97a00',text:"D1 \u2192 S1 Directing: Set clear SMART goals. Show and tell how \u2014 demonstrate, don\u2019t just explain. Provide information, resources, and solutions. Establish timelines and define check-in points. Less \u2018what do you think?\u2019 \u2014 they need direction right now, not exploration. Acknowledge transferable skills and enthusiasm."},
+  d2:{color:'#8a1a1a',bg:'#fce8e8',border:'#c0302e',text:"D2 \u2192 S2 Coaching: Acknowledge their struggle \u2014 disillusionment is normal at this stage. Involve them in problem solving (\u2018what have you tried?\u2019). Redirect and reteach where needed. Provide encouragement alongside feedback. Explain the why behind how things are done. \u2018I\u2019m confident you can do this.\u2019"},
+  d3:{color:'#1a4a8a',bg:'#e8eef7',border:'#4a7abf',text:"D3 \u2192 S3 Supporting: Ask questions and listen first. Facilitate self-reliant problem solving \u2014 \u2018what alternatives do you have?\u2019 Express confidence in their competence. Provide help and ideas only when asked. Reflect on past successes. Acknowledge their contributions to the team."},
+  d4:{color:'#1a6640',bg:'#e6f2ec',border:'#2a8050',text:"D4 \u2192 S4 Delegating: Draw out and create visibility for their success. Encourage innovation \u2014 \u2018what are you doing to keep your work fresh?\u2019 Support autonomy \u2014 \u2018where do you want more influence?\u2019 Provide stretch goals. Trust their judgment. Ask how you can support, not what they should do."}
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('mtg-date').value = new Date().toISOString().split('T')[0];
+  updateDateDisplay();
+  addAction();
+  addAction();
+});
+
+function updateDateDisplay() {
+  var v = document.getElementById('mtg-date').value;
+  if (!v) return;
+  document.getElementById('date-display').textContent =
+    new Date(v + 'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+}
+
+function toggleSection(hdr) {
+  var id = hdr.dataset.sec;
+  var body = document.getElementById('body-' + id);
+  var chev = hdr.querySelector('.sec-chevron');
+  var open = body.classList.toggle('open');
+  chev.classList.toggle('open', open);
+  hdr.classList.toggle('collapsed', !open);
+}
+
+function updateProgress(sec) {
+  var body = document.getElementById('body-' + sec);
+  var boxes = body.querySelectorAll('input[type=checkbox]');
+  var checked = 0;
+  boxes.forEach(function(b) { if (b.checked) checked++; });
+  var prog = document.getElementById('prog-' + sec);
+  if (prog) prog.textContent = checked + '/' + boxes.length;
+  boxes.forEach(function(b) {
+    var li = b.closest('li');
+    if (li) li.classList.toggle('check-done', b.checked);
+  });
+}
+
+function updatePipelineBar() {
+  var val = parseFloat(document.getElementById('m-pipeline').value.replace(/[$,]/g,'')) || 0;
+  var pct = Math.min(Math.round((val / 1500000) * 100), 150);
+  document.getElementById('pct-lbl').textContent = pct + '%';
+  var fill = document.getElementById('prog-bar');
+  fill.style.width = Math.min(pct, 100) + '%';
+  fill.style.background = pct >= 100 ? '#1a6640' : pct >= 50 ? '#1a4a8a' : '#c97a00';
+}
+
+function selectSlii(d) {
+  ['d1','d2','d3','d4'].forEach(function(x) { document.getElementById('slii-'+x).classList.remove('sel'); });
+  document.getElementById('slii-'+d).classList.add('sel');
+  selectedSlii = d;
+  var g = SLII_G[d];
+  var el = document.getElementById('slii-guidance');
+  el.style.display = 'block';
+  el.style.background = g.bg;
+  el.style.borderLeftColor = g.border;
+  el.style.color = g.color;
+  el.textContent = g.text;
+}
+
+function addAction() {
+  actionCount++;
+  var id = 'act-' + actionCount;
+  var row = document.createElement('div');
+  row.className = 'action-row';
+  row.id = id;
+  row.innerHTML =
+    '<input type="text" placeholder="Action item for rep\u2026">' +
+    '<select><option>This week</option><option>Next meeting</option><option>Ongoing</option><option>Carry-forward</option></select>' +
+    '<button class="del-btn" onclick="document.getElementById(\'' + id + '\').remove()">\u2715</button>';
+  document.getElementById('actions-list').appendChild(row);
+}
+
+function getActions() {
+  var rows = document.querySelectorAll('.action-row');
+  var lines = [];
+  var i = 0;
+  rows.forEach(function(row) {
+    var inp = row.querySelector('input[type=text]');
+    var sel = row.querySelector('select');
+    var txt = inp ? inp.value.trim() : '';
+    if (txt) { i++; lines.push('  ' + i + '. ' + txt + ' [' + (sel ? sel.value : '') + ']'); }
+  });
+  return lines.length ? lines.join('\n') : '  (none recorded)';
+}
+
+function generateRecord() {
+  var rep      = document.getElementById('sel-rep').value;
+  var repName  = rep ? REP_NAMES[rep] : '(no rep selected)';
+  var date     = document.getElementById('mtg-date').value || '(no date)';
+  var mtgNum   = document.getElementById('mtg-num').value || '\u2014';
+  var ff       = document.getElementById('fireflies-link').value || '(no link)';
+  var pipeline = document.getElementById('m-pipeline').value  || '\u2014';
+  var weighted = document.getElementById('m-weighted').value  || '\u2014';
+  var approved = document.getElementById('m-approved').value  || '\u2014';
+  var leads    = document.getElementById('m-leads').value     || '0';
+  var appts    = document.getElementById('m-appts').value     || '0';
+  var contr    = document.getElementById('m-contracts').value || '0';
+  var sliiMap  = {d1:'D1 \u2014 Enthusiastic beginner (S1 Directing)',d2:'D2 \u2014 Disillusioned learner (S2 Coaching)',d3:'D3 \u2014 Capable but cautious (S3 Supporting)',d4:'D4 \u2014 Self-reliant achiever (S4 Delegating)'};
+  var sliiLabel = selectedSlii ? sliiMap[selectedSlii] : '(not set)';
+  var actions  = getActions();
+  var n1 = document.getElementById('notes-1').value.trim();
+  var n2 = document.getElementById('notes-2').value.trim();
+  var n3 = document.getElementById('notes-3').value.trim();
+  var n4 = document.getElementById('notes-4').value.trim();
+  var n5 = document.getElementById('notes-5').value.trim();
+
+  var record =
+    'STINSON SERVICES \u2014 WEEKLY 1-ON-1 RECORD\n' +
+    '\u2501'.repeat(40) + '\n' +
+    'Rep:           ' + repName + '\n' +
+    'Date:          ' + date + '\n' +
+    'Meeting:       ' + mtgNum + '\n' +
+    'SLII Level:    ' + sliiLabel + '\n' +
+    'Fireflies:     ' + ff + '\n' +
+    '\nPIPELINE SNAPSHOT\n' +
+    '  Open pipeline:    ' + pipeline + '\n' +
+    '  Weighted:         ' + weighted + '\n' +
+    '  Approved (FY):    ' + approved + '\n' +
+    '\nSELF-GEN ACTIVITY\n' +
+    '  Leads:            ' + leads + '\n' +
+    '  Appointments:     ' + appts + '\n' +
+    '  Contracts sent:   ' + contr + '\n' +
+    '\nACTION ITEMS\n' + actions +
+    (n1 ? '\n\nCHECK-IN NOTES\n' + n1 : '') +
+    (n2 ? '\n\nPIPELINE NOTES\n' + n2 : '') +
+    (n3 ? '\n\nACTIVITY NOTES\n' + n3 : '') +
+    (n4 ? '\n\nCOACHING NOTES\n' + n4 : '') +
+    (n5 ? '\n\nTICKTICK NOTES\n' + n5 : '') +
+    '\n\n' + '\u2501'.repeat(40);
+
+  document.getElementById('notion-output').value = record;
+  document.getElementById('notion-hint').textContent =
+    '\u2192 Click "Select all text" then Cmd+C (Mac) or Ctrl+C (Windows) to copy. Paste into Notion Meeting Records.';
+}
+
+function selectAll() {
+  var ta = document.getElementById('notion-output');
+  ta.focus();
+  ta.select();
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(ta.value).catch(function(){});
+  }
+  var btn = document.getElementById('select-btn');
+  btn.textContent = '\u2713 Selected \u2014 now Cmd/Ctrl+C';
+  btn.classList.add('done');
+  setTimeout(function() {
+    btn.textContent = 'Select all text';
+    btn.classList.remove('done');
+  }, 3000);
+}
+
+function printPage() {
+  try {
+    window.print();
+  } catch(e) {
+    document.getElementById('notion-hint').textContent =
+      'To print: use your browser menu \u2192 File \u2192 Print, or right-click the page \u2192 Print.';
+  }
+}
+</script>
+</body>
+</html>
